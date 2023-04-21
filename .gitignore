@@ -24,6 +24,9 @@ ENV/
 env.bak/
 venv.bak/
 
+.cache/
+.vscode/
+
 *.dir
 *.dat
 *.bak
