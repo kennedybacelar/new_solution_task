@@ -31,8 +31,10 @@ class DataFile:
         dates, days_of_month = get_date_and_day_of_month_lists(self.start_date, self.end_date)
         number_of_days_in_interval = len(dates)
         metrics = list(_get_final_df_dict().keys())[3:] # Getting the 5 metrics 
-
-        for idx in copy_sites_df.index: # Index is already set. is the column A ( The one with site ID identifier )
+        
+        
+        copy_sites_df.set_index(copy_sites_df.columns[0], inplace=True)
+        for idx in copy_sites_df.index:
             temp_df = pd.DataFrame(_get_final_df_dict())
             temp_df["Day of Month"] = days_of_month
             temp_df["Date"] = dates
@@ -46,8 +48,8 @@ class DataFile:
     
     def write_output_file(self):
         sheet_name = 'input_refresh_template'
-        file_path = f"{load_config()['output_path']}/{self.file_path}"
-        self.final_df.to_excel(file_path, sheet_name=sheet_name, index=False)        
+        output_file_path = f"{load_config()['output_path']}/output_{self.file_path.name}"
+        self.final_df.to_excel(output_file_path, sheet_name=sheet_name, index=False)        
 
 def get_input_file_paths() -> List[Path]:
     input_path_str = load_config()["input_path"]
@@ -57,7 +59,7 @@ def get_date_and_day_of_month_lists(start_date: datetime, end_date: datetime) ->
     dates = []
     days_of_month = []
     for i in range((end_date - start_date).days + 1):
-        dates.append(start_date + timedelta(days=i))
+        dates.append((start_date + timedelta(days=i)).date())
         days_of_month.append((start_date + timedelta(days=i)).day)
     return dates, days_of_month
 
