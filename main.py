@@ -13,6 +13,9 @@ class DataFile:
         self.sites_df = self._extract_sites_info()
         self.final_df = pd.DataFrame(_get_final_df_dict(), columns=list(_get_final_df_dict().keys()), dtype=str)
         
+        # Generating final dataframe after all needed variable are initialized
+        self.process_sites_df()
+        
     def _validate_data_frame(self):
         start_and_end_dates = self.dataframe.iloc[0:2, 0]
         try:
@@ -79,5 +82,4 @@ if __name__ == "__main__":
     all_filepaths = get_input_file_paths()
     for filepath in all_filepaths:
         data_obj = DataFile(filepath)
-        data_obj.process_sites_df()
         data_obj.write_output_file()
