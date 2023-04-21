@@ -43,9 +43,11 @@ class DataFile:
             for idx_count, idx_slice  in enumerate(range(0, len(all_metrics_in_single_list), number_of_days_in_interval)):
                 temp_df[metrics[idx_count]] = all_metrics_in_single_list[idx_slice: idx_slice + number_of_days_in_interval]
             self.final_df = pd.concat([self.final_df, temp_df], axis=0)
-        
-        
-        
+    
+    def write_output_file(self):
+        sheet_name = 'input_refresh_template'
+        file_path = f"{load_config()['output_path']}/{self.file_path}"
+        self.final_df.to_excel(file_path, sheet_name=sheet_name, index=False)        
 
 def get_input_file_paths() -> List[Path]:
     input_path_str = load_config()["input_path"]
@@ -70,3 +72,10 @@ def _get_final_df_dict():
         "Visits": [],
         "Average Time Spent on Site": []
     }
+
+if __name__ == "__main__":
+    all_filepaths = get_input_file_paths()
+    for filepath in all_filepaths:
+        data_obj = DataFile(filepath)
+        data_obj.process_sites_df()
+        data_obj.write_output_file()
